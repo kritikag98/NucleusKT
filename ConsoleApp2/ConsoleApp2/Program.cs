@@ -10,14 +10,37 @@ namespace ConsoleApp2
     {
         static void Main(string[] args)
         {
-            double a = Convert.ToDouble(Console.ReadLine());
-            double b = Convert.ToDouble(Console.ReadLine());
-            double sum = a + b;
-            double diff = a - b;
-            double prd = a * b;
-            Console.WriteLine("Sum is "+sum);
-            Console.WriteLine("Difference is: " + diff);
-            Console.WriteLine("Product is: " + prd);
+            Console.WriteLine("Enter the value of a: ");
+            var aAsString = Console.ReadLine();
+            double a;
+            while (!double.TryParse(aAsString, out a))
+            {
+                Console.WriteLine("This is not a number!");
+                aAsString = Console.ReadLine();
+            }
+            Console.WriteLine("Enter the value of b: ");
+            var bAsString = Console.ReadLine();
+            double b;
+            while (!double.TryParse(bAsString, out b))
+            {
+                Console.WriteLine("This is not a number!");
+                bAsString = Console.ReadLine();
+            }
+            Console.WriteLine("Enter choice 1 for sum, 2 for difference and 3 for product: ");
+            int ch = Convert.ToInt32(Console.ReadLine());
+            double res = 0;
+            switch(ch)
+            {
+                case 1: res = a + b;
+                    break;
+                case 2: res = a - b;
+                    break;
+                case 3: res = a * b;
+                    break;
+                default: Console.WriteLine("Wrong choice");
+                    break;
+            }
+            Console.WriteLine("The result is: " + res);
             Console.ReadLine();
         }
     }
