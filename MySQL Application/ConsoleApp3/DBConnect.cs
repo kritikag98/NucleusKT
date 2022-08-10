@@ -25,9 +25,9 @@ namespace ConsoleApp3
         private void Initialize()
         {
             server = "localhost";
-            database = "mysql";
-            uid = "root";
-            password = "homelane@123";
+            database = "db";
+            uid = "userid";
+            password = "password";
             string connectionString;
             connectionString = "SERVER=" + server + ";" + "DATABASE=" +
             database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
