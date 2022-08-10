@@ -8,6 +8,7 @@ using MySql.Data.MySqlClient;
 
 namespace ConsoleApp3
 {
+
     internal class DBConnect
     {
         private MySqlConnection connection;
@@ -25,9 +26,9 @@ namespace ConsoleApp3
         private void Initialize()
         {
             server = "localhost";
-            database = "db";
-            uid = "userid";
-            password = "password";
+            database = "mysql";
+            uid = "root";
+            password = "homelane@123";
             string connectionString;
             connectionString = "SERVER=" + server + ";" + "DATABASE=" +
             database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
@@ -82,7 +83,21 @@ namespace ConsoleApp3
         //Insert statement
         public void Insert()
         {
-            string query = "INSERT INTO role (roleid, description) VALUES(5, 'Junior Engineer')";
+            //Validation for int
+            Console.WriteLine("Enter the roleid you want to enter: ");
+            int x;
+            var xAsString = Console.ReadLine();
+            while (!int.TryParse(xAsString, out x))
+            {
+                Console.WriteLine("This is not a number!");
+                xAsString = Console.ReadLine();
+            }
+
+            //Validation for string
+            Console.WriteLine("Enter the description for the given roleid: ");
+            string y = Console.ReadLine();
+
+            string query = "INSERT INTO role (roleid, description) VALUES(@roleid, @description)";
 
             //open connection
             if (this.OpenConnection() == true)
@@ -90,6 +105,9 @@ namespace ConsoleApp3
                 //create command and assign the query and connection from the constructor
                 MySqlCommand cmd = new MySqlCommand(query, connection);
 
+                cmd.Parameters.AddWithValue("@roleid", x);
+                cmd.Parameters.AddWithValue("@description", y);
+                cmd.Prepare();
                 //Execute command
                 cmd.ExecuteNonQuery();
 
@@ -100,7 +118,23 @@ namespace ConsoleApp3
         //Update statement
         public void Update()
         {
-            string query = "UPDATE users SET name='Joe', roleid=1 WHERE name='John'";
+            Console.WriteLine("Enter the name you want to change: ");
+            string w = Console.ReadLine();
+
+            //Validation for int
+            Console.WriteLine("Enter the roleid for which you want to change the name: ");
+            int z;
+            var zAsString = Console.ReadLine();
+            while (!int.TryParse(zAsString, out z))
+            {
+                Console.WriteLine("This is not a number!");
+                zAsString = Console.ReadLine();
+            }
+
+            Console.WriteLine("Enter the new name you want to add: ");
+            string c = Console.ReadLine();
+
+            string query = "UPDATE users SET name=@name, roleid=@roleid WHERE name=@oldname";
 
             //Open connection
             if (this.OpenConnection() == true)
@@ -111,6 +145,9 @@ namespace ConsoleApp3
                 cmd.CommandText = query;
                 //Assign the connection using Connection
                 cmd.Connection = connection;
+                cmd.Parameters.AddWithValue("@oldname", w);
+                cmd.Parameters.AddWithValue("@roleid", z);
+                cmd.Parameters.AddWithValue("@name", c);
 
                 //Execute query
                 cmd.ExecuteNonQuery();
@@ -123,26 +160,23 @@ namespace ConsoleApp3
         //Delete statement
         public void Delete()
         {
-            string query = "DELETE FROM users WHERE name='John'";
-
+            Console.WriteLine("Enter the name you want to delete: ");
+            string y;
+            y = Console.ReadLine();
+            string query = "DELETE FROM users WHERE name=@name";
             if (this.OpenConnection() == true)
             {
                 MySqlCommand cmd = new MySqlCommand(query, connection);
+                cmd.Parameters.AddWithValue("@name", y);
                 cmd.ExecuteNonQuery();
                 this.CloseConnection();
             }
         }
 
         //Select statement
-        public List<string>[] Select()
+        public void Select()
         {
             string query = "SELECT * FROM users";
-
-            //Create a list to store the result
-            List<string>[] list = new List<string>[3];
-            list[0] = new List<string>();
-            list[1] = new List<string>();
-            list[2] = new List<string>();
 
             //Open connection
             if (this.OpenConnection() == true)
@@ -152,12 +186,11 @@ namespace ConsoleApp3
                 //Create a data reader and Execute the command
                 MySqlDataReader dataReader = cmd.ExecuteReader();
 
-                //Read the data and store them in the list
+                //Display the contents of users table
+                Console.WriteLine("The contents of the users table are: ");
                 while (dataReader.Read())
                 {
-                    list[0].Add(dataReader["userid"] + "");
-                    list[1].Add(dataReader["name"] + "");
-                    list[2].Add(dataReader["roleid"] + "");
+                    Console.WriteLine("{0} {1} {2} ", dataReader.GetInt32(0), dataReader.GetString(1), dataReader.GetInt32(2));
                 }
 
                 //close Data Reader
@@ -166,12 +199,33 @@ namespace ConsoleApp3
                 //close Connection
                 this.CloseConnection();
 
-                //return list to be displayed
-                return list;
             }
-            else
+        }
+         public void SelectRole()
+        {
+            string query = "SELECT * FROM role";
+
+            //Open connection
+            if (this.OpenConnection() == true)
             {
-                return list;
+                //Create Command
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+                //Create a data reader and Execute the command
+                MySqlDataReader dataReader = cmd.ExecuteReader();
+
+                //Display the contents of users table
+                Console.WriteLine("The contents of the role table are: ");
+                while (dataReader.Read())
+                {
+                    Console.WriteLine("{0} {1}", dataReader.GetInt32(0), dataReader.GetString(1));
+                }
+
+                //close Data Reader
+                dataReader.Close();
+
+                //close Connection
+                this.CloseConnection();
+
             }
         }
     }

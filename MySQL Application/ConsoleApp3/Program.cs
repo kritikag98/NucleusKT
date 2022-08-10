@@ -13,8 +13,10 @@ namespace ConsoleApp3
         {
             DBConnect db = new DBConnect();
             //db.Insert();
-            db.Update();
-            db.Delete();
+            //db.Update();
+            //db.Delete();
+            db.Select();
+            db.SelectRole();
             Console.ReadLine();
         }
     }
