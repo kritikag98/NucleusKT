@@ -9,6 +9,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using MySqlX.XDevAPI.Relational;
 using NucleusComparison;
@@ -157,7 +158,7 @@ namespace ConsoleApp3
         public DataTable publishTableRead(string tablename)
         {
             string y = Convert.ToDateTime(LastPublishDate()).ToString("yyyy-MM-dd hh:mm:ss");
-            string query = String.Format("select * from {0} where ModifiedDate > '{1}'" , tablename, y);
+            string query = String.Format("select * from {0} where ModifiedDate > '{1}'", tablename, y);
             DataTable x = Read(query, createConnectionString1());
             return x;
         }
@@ -181,7 +182,7 @@ namespace ConsoleApp3
             DataTable liveDt = liveTableRead(tablename);
             DataTable publishDt = publishTableRead(tablename);
             string pkey = liveDt.Columns[0].ColumnName;
-            List<Changes>list = new List<Changes>();
+            List<Changes> list = new List<Changes>();
             foreach (DataRow prow in publishDt.Rows)
             {
                 foreach (DataRow lrow in liveDt.Select(String.Format("{0} = {1}", pkey, prow[pkey])))
@@ -211,7 +212,7 @@ namespace ConsoleApp3
             Console.WriteLine("File Stream closed");
 
             foreach (var item in list)
-            { 
+            {
                 s.WriteLine("{0}, {1}, {2}, {3}, {4}, {5}, {6}", tablename, pkey, item.column_name, item.new_data, item.old_data, item.row_data, item.name);
             }
 
