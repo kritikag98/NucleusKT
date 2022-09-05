@@ -176,7 +176,7 @@ namespace ConsoleApp3
             List<Changes>list = new List<Changes>();
             foreach (DataRow prow in publishDt.Rows)
             {
-                foreach (DataRow lrow in liveDt.Select(String.Format("{0} = {1}", pkey, prow[y])))
+                foreach (DataRow lrow in liveDt.Select(String.Format("{0} = {1}", pkey, prow[pkey])))
                 {
                     foreach (DataColumn lcolumn in liveDt.Columns)
                     {
@@ -192,7 +192,7 @@ namespace ConsoleApp3
             } 
             foreach(var item in list)
             {
-                Console.WriteLine("Column value is {0}, New Data is {1}, Old data is {2}, {3} is {4}", item.column_name, item.new_data, item.old_data, y, item.row_data);
+                Console.WriteLine("Column value is {0}, New Data is {1}, Old data is {2}, {3} is {4}", item.column_name, item.new_data, item.old_data, pkey, item.row_data);
             }
         }
     }
